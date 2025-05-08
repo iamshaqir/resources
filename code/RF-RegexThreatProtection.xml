@@ -1,0 +1,23 @@
+<RegularExpressionProtection name="BlockMaliciousRequestPayload">
+    <DisplayName>BlockMaliciousRequestPayload</DisplayName>
+    <Source>request</Source>
+    <JSONPayload>
+
+        <!-- Apply to all JSON fields at any depth -->
+        <JSONPath path="$..*">
+            <!-- Malicious patterns (escape characters, meta symbols, regex attempts) -->
+            <Pattern>.*[\\\"\'\^&;<>].*</Pattern>
+
+            <!-- Suspicious encoded strings -->
+            <Pattern>"[a-zA-Z0-9+/]{100,}={0,2}"</Pattern>
+
+            <!-- Common attack signatures -->
+            <Pattern>.*(?i)(select\s+|union\s+|alert\(|eval\(|drop\s+|insert\s+|script).*<\/?.*>?.*</Pattern>
+
+            <!-- Multiple meta-symbols for obfuscation -->
+            <Pattern>.*[\[\]\(\)\{\}\|]{3,}.*</Pattern>
+        </JSONPath>
+
+    </JSONPayload>
+    <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+</RegularExpressionProtection>
